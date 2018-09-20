@@ -1,0 +1,44 @@
+<html>
+<head>
+<script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+<script>
+var x="";
+var config = {
+	    apiKey: "AIzaSyBDTmEs-GTOVt1gXLF0A1rLOKHuRtZ3wCY",
+		 authDomain: "packman-1fbaf.firebaseapp.com",
+	    databaseURL: "https://packman-1fbaf.firebaseio.com",
+	    projectId: "packman-1fbaf",
+	    storageBucket: "packman-1fbaf.appspot.com",
+	    messagingSenderId: "405354843025"
+	  };
+	  firebase.initializeApp(config);
+var cc="";
+function _on(){
+	var v='<iframe width="1000" height="1000" src='+'"https://www.youtube.com/embed/3dl-wdUAlco' +'?loop=1&autoplay=1&playlist=64N14KQaUZw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+	//document.getElementById("_p").innerHTML = v;
+	x=document.frm_1.text_1.value;
+	//x.replace("watch?v=","embed/");
+	var vv=x.replace("watch?v=","embed/");
+	document.getElementById("_p").innerHTML = '<iframe width="1000" height="1000" src="'+vv+'?loop=1&autoplay=1&playlist=64N14KQaUZw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+	/*document.getElementById("_p").innerHTML+= '<iframe width="0" height="0" src="https://www.youtube.com/embed/3dl-wdUAlco?loop=1&autoplay=1&playlist=64N14KQaUZw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';*/
+}
+/*
+<iframe width="0" height="0" src="https://www.youtube.com/embed/3dl-wdUAlco?loop=1&autoplay=1&playlist=64N14KQaUZw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>*/
+
+firebase.database().ref('/talk/content').limitToLast(1).on('child_added', function(snapshot){
+		msg= snapshot.val();
+		x=msg.substring(13);
+	var vv=x.replace("watch?v=","embed/");
+	document.getElementById("_p").innerHTML = '<iframe width="1000" height="1000" src="'+vv+'?loop=1&autoplay=1&playlist=64N14KQaUZw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+	});
+</script>
+</head>
+<body>
+<p id="_p">
+</p>
+<form name="frm_1">
+<input type = "text" ="100" size ="50"name = "text_1">
+<input type = "button" name = "btn_1" value ="전송" onclick = "_on()">
+</form>
+</body>
+</html>
