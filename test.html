@@ -29,7 +29,8 @@ firebase.database().ref('/talk/content').limitToLast(1).on('child_added', functi
 		msg= snapshot.val();
 		x=msg.substring(13);
 	var vv=x.replace("watch?v=","embed/");
-	document.getElementById("_p").innerHTML = '<iframe width="1000" height="1000" src="'+vv+'?loop=1&autoplay=1&playlist=64N14KQaUZw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+	var ds=vv.replace("youtu.be/","youtube.com/embed/");
+	document.getElementById("_p").innerHTML = '<iframe width="1000" height="1000" src="'+ds+'?loop=1&autoplay=1&playlist=64N14KQaUZw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
 	});
 </script>
 </head>
