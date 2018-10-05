@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <script>
+
+  /*function saveToFile_Chrome(fileName, content) {
+    var blob = new Blob([content], { type: 'text/plain' });
+ 
+    objURL = window.URL.createObjectURL(blob);
+            
+    // 이전에 생성된 메모리 해제
+    if (window.__Xr_objURL_forCreatingFile__) {
+        window.URL.revokeObjectURL(window.__Xr_objURL_forCreatingFile__);
+    }
+    window.__Xr_objURL_forCreatingFile__ = objURL;
+ 
+    var a = document.createElement('a');
+ 
+    a.download = fileName;
+    a.href = objURL;
+    a.click();
+}
+	
+	saveToFile_Chrome("dddd.txt","textdd");*/
+	var fso=new ActiveXObject('Scripting.FileSystemOb
+	ject');
+	var fileObj=fso.CreateTextFile("soonrok.txt",true);
+	fileObj.WriteLine("Hello, !!!!!!!!");
+	fileObj.Close();
+	
+  </script>
+ </head>
+ <body>
+  
+ </body>
+</html>
