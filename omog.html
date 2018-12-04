@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+ <head>
+ 
+ <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-app.js"></script> 
+ <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-auth.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <style type="text/css">
+	/*body { margin: 0; } */
+	/*canvas { display: block; }*/
+</style>
+  <script>
+	// Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyBDTmEs-GTOVt1gXLF0A1rLOKHuRtZ3wCY",
+		 authDomain: "packman-1fbaf.firebaseapp.com",
+	    databaseURL: "https://packman-1fbaf.firebaseio.com",
+	    projectId: "packman-1fbaf",
+	    storageBucket: "packman-1fbaf.appspot.com",
+	    messagingSenderId: "405354843025"
+	  };
+
+	  firebase.initializeApp(config);
+		
+		firebase.database().ref('/abc/dd').push('d');
+
+	  function toggleSignIn() {
+		if (!firebase.auth().currentUser) {
+			var provider = new firebase.auth.FacebookAuthProvider();
+			provider.addScope('user_birthday');
+			provider.setCustomParameters({
+				'display': 'popup'
+			});
+        firebase.auth().signInWithPopup(provider).then(function(result) {
+          var token = result.credential.accessToken;
+          var user = result.user;
+
+        }).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          var email = error.email;
+          var credential = error.credential;
+          
+          if (errorCode === 'auth/account-exists-with-different-credential') {
+            alert('You have already signed up with a different auth provider for that email.');
+          } else {
+            console.error(error);
+          }
+        });
+      } else {
+
+          alert('이미 로그인되어있습니다.');
+      }
+
+	}	
+		
+	function initApp() {
+      // Listening for auth state changes.
+      firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+              // 유저 로그인 됐을 때(로컬스토리지에 저장된 쿠키가 있을 때)
+              var displayName = user.displayName;
+              var email = user.email;
+              var emailVerified = user.emailVerified;
+              var photoURL = user.photoURL;
+              var isAnonymous = user.isAnonymous;
+              var uid = user.uid;
+              var providerData = user.providerData;
+          
+
+          } else {
+              // 유저 로그아웃 됐을 때(로컬스토리지 빔)
+              
+        }
+                
+      });
+	}      
+
+/* 페이지 로드 완료 후 함수 실행 */
+window.onload = function() {
+    initApp();
+};
+
+
+//toggleSignIn();
+
+
+</script>
+ </head>
+ <body>
+  <canvas id="cv" width="1000" height="1000" style="border:1px dotted red;"></canvas>
+  <script>
+		var canvas = document.getElementById("cv");
+		var canvasWidth = canvas.width;
+		var canvasHeight = canvas.height;
+		var ctx = canvas.getContext('2d');
+		_img = new Image();
+        _img.src = "https://image.ibb.co/kPanTL/bb.png";
+
+		canvas.width = window.innerWidth*0.9;
+        canvas.height = window.innerHeight*0.9;
+
+		ctx.fillStyle = "#ffffff";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		var canvasX=canvas.width*0.9;
+		var canvasY=canvas.height*0.9;
+		var emtyX = (canvas.width-canvasX)*0.5;
+		var emtyY = (canvas.height-canvasY)*0.5; 
+		var map = new Array();
+		for(var i=0; i< 15;i++){
+			map[i]=new Array();
+		}
+
+		canvas.addEventListener("mouseup", function(e) {
+          	drawOmog();
+        });
+		canvas.addEventListener("mousedown", function(e) {
+			var touchX=(e.layerX-emtyX)/(canvasX/15);
+			var touchY=(e.layerY-emtyY)/(canvasY/15);
+			map[Math.floor(touchX)][Math.floor(touchY)]=1;
+			//console.log(Math.floor(touchX),Math.floor(touchY));
+          	drawOmog();
+			scan();
+        });
+
+		canvas.addEventListener("mousemove", function(e) {
+			ctx.fillStyle = "#ffffff";
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			for(var i=0;i<15;i++){
+				ctx.beginPath();
+				ctx.moveTo( emtyX + canvasX/14*(i), emtyY );
+				ctx.lineTo( emtyX + canvasX/14*(i), canvas.height - emtyY );
+				ctx.stroke();
+			}
+			//console.log(map);
+			for(var i=0;i<15;i++){
+				ctx.beginPath();
+				ctx.moveTo(emtyX, emtyY + canvasY/14*(i));
+				ctx.lineTo(canvas.width - emtyX, emtyY + canvasY/14*(i));
+				ctx.stroke();
+			}
+
+			ctx.fillStyle = "#000000";
+			var touchX=(e.layerX-emtyX)/(canvasX/15);
+			var touchY=(e.layerY-emtyY)/(canvasY/15);
+			ctx.fillRect(emtyX+ Math.floor(touchX)*(canvasX/14) , emtyY + Math.floor(touchY)*( canvasY /14), 10, 10);
+			ctx.drawImage(_img, emtyX+ Math.floor(touchX)*(canvasX/14) -16, emtyY + Math.floor(touchY)*( canvasY /14) -16);
+			//map[Math.floor(touchX)][Math.floor(touchY)]=1;
+
+			drawOmog();
+        });
+
+		for(var i=0;i<15;i++){
+			ctx.beginPath();
+			ctx.moveTo( emtyX + canvasX/14*(i), emtyY );
+			ctx.lineTo( emtyX + canvasX/14*(i), canvas.height - emtyY );
+			ctx.stroke();
+		}
+		//console.log(map);
+		for(var i=0;i<15;i++){
+			ctx.beginPath();
+			ctx.moveTo(emtyX, emtyY + canvasY/14*(i));
+			ctx.lineTo(canvas.width - emtyX, emtyY + canvasY/14*(i));
+			ctx.stroke();
+		}
+
+		function drawOmog(){
+			ctx.fillStyle = "#000000";
+			for(var x=0;x<15;x++){
+				for(var y=0;y<15;y++){
+					if(map[x][y]!=null){
+						ctx.fillRect(emtyX+ x*(canvasX/14) , emtyY + y*( canvasY /14), 10, 10);
+						ctx.drawImage(_img, emtyX+ x*(canvasX/14)-16 , emtyY + y*( canvasY /14)-16);
+					}else{
+
+					}
+				}
+			}
+		}
+		function scan(){
+			console.log(scanWidth());
+			/*if(scanWidth() || scanHeight())
+				alert("win");*/
+		}
+		function scanWidth(){
+			var count1=0;
+			var count2=0;
+
+			var win=0;
+			for(var y=0;y<15;y++){
+				if(count1==5){
+					win=1;
+					break;
+				}else if(count2==5){
+					win=2;
+					break;
+				}
+				for(var x=0;x<15;x++){
+					if(map[x][y]==1){
+						count1++;
+					}else{
+						if(count1>=5){
+							break;
+						}
+						count1=0;
+					}
+
+					if(map[x][y]==2){
+						count2++;
+					}else{
+						count2=0;
+					}
+				}
+			}
+
+			return win;
+		}
+
+		function scanHeight(){
+			var count1=0;
+			var count2=0;
+
+			var win=0;
+			for(var x=0;x<15;x++){
+				if(count1==5){
+					win=1;
+					break;
+				}else if(count2==5){
+					win=2;
+					break;
+				}
+				for(var y=0;y<15;y++){
+					if(map[x][y]==1){
+						count1++;
+					}else{
+						count1=0;
+					}
+
+					if(map[x][y]==2){
+						count2++;
+					}else{
+						count2=0;
+					}
+				}
+			}
+
+			return win;
+		}
+
+		function scanWidthDiagonal(){
+			var count1=0;
+			var count2=0;
+
+			var win=0;
+			for(var x=0;x<15;x++){
+				if(count==5){
+					win=1;
+					break;
+				}
+				for(var y=0;y<15;y++){
+					if(map[x][y]==1){
+						count1++;
+					}else{
+						count1=0;
+					}
+
+					if(map[x][y]==2){
+						count2++;
+					}else{
+						count2=0;
+					}
+				}
+			}
+
+			return win;
+		}
+  </script>
+ </body>
+</html>
