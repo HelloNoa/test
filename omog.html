@@ -17,6 +17,14 @@
 </style>
   <script>
   var id = prompt("Please enter 1 or 2", );
+  var status = 1;
+
+  if(id==1){
+	status=1;
+  }else{
+	status=0;
+  }
+  
 	// Initialize Firebase
 	  var config = {
 	    apiKey: "AIzaSyBDTmEs-GTOVt1gXLF0A1rLOKHuRtZ3wCY",
@@ -103,11 +111,13 @@ window.onload = function() {
 		var ctx = canvas.getContext('2d');
 		_img = new Image();
         _img.src = "https://image.ibb.co/kPanTL/bb.png";
-
+		
+		_img_w = new Image();
+		_img_w.src = "https://i.ibb.co/qj34KZD/bb.png";
 		canvas.width = window.innerWidth*0.9;
         canvas.height = window.innerHeight*0.9;
 
-		ctx.fillStyle = "#ffffff";
+		ctx.fillStyle = "##F1B168";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		var canvasX=canvas.width*0.9;
 		var canvasY=canvas.height*0.9;
@@ -124,14 +134,17 @@ window.onload = function() {
 		canvas.addEventListener("mousedown", function(e) {
 			var touchX=(e.layerX-emtyX)/(canvasX/15);
 			var touchY=(e.layerY-emtyY)/(canvasY/15);
-			map[Math.floor(touchX)][Math.floor(touchY)]=1;
+			//map[Math.floor(touchX)][Math.floor(touchY)]=1;
 			//console.log(Math.floor(touchX),Math.floor(touchY));
-          	drawOmog();
-			scan();
+          	if(status==1){
+				//drawOmog();
+				firebase.database().ref('/omog/log').push({ x: Math.floor(touchX), y: Math.floor(touchY), Id: id});
+				//scan();
+			}
         });
 
 		canvas.addEventListener("mousemove", function(e) {
-			ctx.fillStyle = "#ffffff";
+			ctx.fillStyle = "#F1B168";
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 			for(var i=0;i<15;i++){
 				ctx.beginPath();
@@ -150,13 +163,37 @@ window.onload = function() {
 			ctx.fillStyle = "#000000";
 			var touchX=(e.layerX-emtyX)/(canvasX/15);
 			var touchY=(e.layerY-emtyY)/(canvasY/15);
-			ctx.fillRect(emtyX+ Math.floor(touchX)*(canvasX/14) , emtyY + Math.floor(touchY)*( canvasY /14), 10, 10);
-			ctx.drawImage(_img, emtyX+ Math.floor(touchX)*(canvasX/14) -16, emtyY + Math.floor(touchY)*( canvasY /14) -16);
-			//map[Math.floor(touchX)][Math.floor(touchY)]=1;
+			if(status){
+				//ctx.fillRect(emtyX+ Math.floor(touchX)*(canvasX/14) , emtyY + Math.floor(touchY)*( canvasY /14), 10, 10);
 
+				ctx.globalAlpha=0.3;
+				if(id==1){
+					ctx.drawImage(_img, emtyX+ Math.floor(touchX)*(canvasX/14) -16, emtyY + Math.floor(touchY)*( canvasY /14) -16);
+				}else{
+					ctx.drawImage(_img_w, emtyX+ Math.floor(touchX)*(canvasX/14) -16, emtyY + Math.floor(touchY)*( canvasY /14) -16);
+				}
+				ctx.globalAlpha=1;
+				//map[Math.floor(touchX)][Math.floor(touchY)]=1;
+			
+			}
 			drawOmog();
         });
-
+		
+		firebase.database().ref('/omog/log').on('child_added', function(snapshot){
+		//msg = snapshot.val().color/*.split(this.SPLIT_CHAR)*/;
+		var val=snapshot.val();	
+		
+		map[val.x][val.y]=val.Id;
+		drawOmog();
+		
+		console.log(val.Id==id);
+		if(val.Id==id){
+			status=0;
+		}else{
+			status=1;
+		}
+		});
+	
 		for(var i=0;i<15;i++){
 			ctx.beginPath();
 			ctx.moveTo( emtyX + canvasX/14*(i), emtyY );
@@ -177,7 +214,11 @@ window.onload = function() {
 				for(var y=0;y<15;y++){
 					if(map[x][y]!=null){
 						ctx.fillRect(emtyX+ x*(canvasX/14) , emtyY + y*( canvasY /14), 10, 10);
-						ctx.drawImage(_img, emtyX+ x*(canvasX/14)-16 , emtyY + y*( canvasY /14)-16);
+						if(map[x][y]==1){
+							ctx.drawImage(_img, emtyX+ x*(canvasX/14)-16 , emtyY + y*( canvasY /14)-16);
+						}else{
+							ctx.drawImage(_img_w, emtyX+ x*(canvasX/14)-16 , emtyY + y*( canvasY /14)-16);
+						}
 					}else{
 
 					}
