@@ -4,12 +4,8 @@ using UnityEngine;
 using System.Xml;
 using UnityEngine.Networking;
 
-/*using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-*/
 
-public class hangang : MonoBehaviour {
+public class benom : MonoBehaviour {
     string url = "http://hangang.dkserver.wo.tc/";
     //string url = "http://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=1171058000";
 
